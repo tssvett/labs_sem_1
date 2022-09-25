@@ -59,8 +59,6 @@ double correct_input_a() {		// эта функция проверяет а на 
 
 
 void first_iteration() {	// эта функция делает расчет первой итерации для дальнейшего просчета R
-	correct_input_x(); // проверка и корректный ввод x
-	correct_input_a(); // проверка и корректный ввод а
 	current_member = numerical_series(n, x); // Нахождение An члена ряда
 	series_sum += current_member;	// Добавляем данный член в сумму ряда
 	output_table(); // Выводим все таблицей
@@ -81,6 +79,8 @@ int main() {
 	string symbol;		// задаем переменную типа стринг
 	while (is_processing) {		// пока true
 		first_iteration();		// Выполняем подсчет первой итерации отдельно, чтобы потом
+		correct_input_x(); // проверка и корректный ввод x
+		correct_input_a(); // проверка и корректный ввод а
 		if (a != int(a)) {		// просчитать значение R
 			while (R > a) {		// пока вычесленная точность больше данной точности
 				series_algorithm();			// выполняем алгоритм 
