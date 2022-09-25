@@ -78,9 +78,9 @@ int main() {
 	bool is_processing = true;		// ставим флаг true
 	string symbol;		// задаем переменную типа стринг
 	while (is_processing) {		// пока true
-		first_iteration();		// Выполняем подсчет первой итерации отдельно, чтобы потом
 		correct_input_x(); // проверка и корректный ввод x
 		correct_input_a(); // проверка и корректный ввод а
+		first_iteration();		// Выполняем подсчет первой итерации отдельно, чтобы потом
 		if (a != int(a)) {		// просчитать значение R
 			while (R > a) {		// пока вычесленная точность больше данной точности
 				series_algorithm();			// выполняем алгоритм 
