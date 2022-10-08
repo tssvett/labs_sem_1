@@ -1,4 +1,4 @@
-﻿#include<iostream>
+﻿#include<iostream> // проверка гитхаба
 #include<vector>
 #include <iomanip>
 using namespace std;
