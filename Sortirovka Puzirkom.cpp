@@ -1,9 +1,10 @@
-﻿#include<iostream> // проверка гитхаба
+﻿#include<iostream> 
 #include<vector>
 #include <iomanip>
 using namespace std;
 int lenght;
 const unsigned int critical_lenght = 23;
+
 
 
 int correct_input_lenght() {		// эта функция проверяет х на корректный ввод
