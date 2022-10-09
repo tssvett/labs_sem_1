@@ -14,13 +14,9 @@ int correct_input_lenght() {		// эта функция проверяет х н�
 		while (cin.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
 		cout << "An Error has been detected! Please, enter a correct lenght > 1: "; // выводим ошибку
 	}
-	if (lenght > critical_lenght){
-		return critical_lenght;
-	}
-	else if (lenght <= critical_lenght) {
+
 		return lenght;	// возвращаем длину
 	}
-}
 
 
 vector<int> random_array_input(vector<int> array) {
