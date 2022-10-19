@@ -142,15 +142,13 @@ void post_algorithm(double x, double a, vector<vector<double>> &storage) {
 		}
 	}
 
-
-
 	else {		//целое число а
 		cout << "Output already calculated values: " << endl;
 		while ((n <= a) && (n <= storage.size())) {
 			output_table(n - 1, storage[n - 1][0], storage[n - 1][1], storage[n - 1][2]);
 			n++;
 		}
-		n = n - 1;		//почему то съезжает на единичку без этого не работает
+		n = n - 1;		
 		if (n < a)
 			cout << "New calculated: " << endl;
 		double series_sum = storage[n - 1][1];
@@ -171,7 +169,7 @@ void post_algorithm(double x, double a, vector<vector<double>> &storage) {
 int main() {
 	double x;
 	double a;
-	double new_x = 5;		//любое значение для инициализации потом исчезнет без влиянич
+	double new_x = 5;		//любое значение для инициализации потом исчезнет без влияния
 	vector<vector<double>> storage;
 	bool is_processing = true;		// ставим флаг true
 	while (is_processing) {		// пока true
