@@ -54,14 +54,14 @@ int spaces_to_star(vector<char>& words) {		// Функция которая за
 }
 
 
-void group_to_one_star(vector<char>& words, int counter_before) {		//функция которая заменяет группу звезд(пробелов) одной звездой(пробелом)
+void group_to_one_star(vector<char>& words,int counter_before) {		//функция которая заменяет группу звезд(пробелов) одной звездой(пробелом)
 	char symbol;
 	char second_symbol;
 	int counter_after = 0;		//задаем второй счетчик для создания рекурсии
-	for (int i = 0; i < words.size() - 1; i++) {
+	for (int i = 0; i < words.size()-1; i++) {
 		symbol = words[i];
 		second_symbol = words[i + 1];
-		if ((symbol == '*') && (second_symbol == '*')) {		//если символ звезда и след за ним звезда, то убираем одну звезду
+		if ((symbol == '*')&&(second_symbol == '*')) {		//если символ звезда и след за ним звезда, то убираем одну звезду
 			words.erase(words.begin() + i);
 			counter_after++;
 		}
@@ -96,7 +96,6 @@ bool y_n_check() { // видимо конечная самописная фун�
 
 
 int main() {
-	
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	bool is_processing = true;
@@ -106,7 +105,6 @@ int main() {
 	int counter;
 	while (is_processing) {
 		bool is_open = true;	// без типа стринг очень тяжко в отдельную фунцию это завернуть
-
 		while (is_open) {
 			cin.clear();
 			cout << "Enter a file name from which take input data: " << endl;
@@ -124,8 +122,8 @@ int main() {
 					cout << "Error#2  This file is empty. " << endl;
 				}
 			}
-			
-			
+			while (cin.get() != '\n');
+			cout << "Enter correct file name!";
 		}
 		ifstream ifile(ifile_name);
 		ofstream ofile(ofile_name, ios_base::app);	// инициализируем файл для выходных данных
@@ -135,4 +133,5 @@ int main() {
 		string_output(words, ofile);
 		is_processing = y_n_check();
 	}
+
 }

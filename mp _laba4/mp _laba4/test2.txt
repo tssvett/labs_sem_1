@@ -1,1 +1,2 @@
-test input data
+10          spaces here. Function that delete groups of spaces is good.
+
