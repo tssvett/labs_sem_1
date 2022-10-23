@@ -15,7 +15,7 @@ int correct_input_lenght() {		// эта функция проверяет дли
 		cout << "An Error has been detected! Please, enter a correct lenght > 1: "; // выводим ошибку
 	}
 	return lenght;	// возвращаем длину
-}
+
 
 
 void random_array_input(vector<int> &array) {		//функция для заполнения вектора случайными числами
