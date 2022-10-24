@@ -99,17 +99,18 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	bool is_processing = true;
-	char ofile_name[100] = "string_output.txt";		// создаем файл с заданным названием и выгружаем туда полученные строки
-	char ifile_name[40];
+	char ofile_name[40] = "string_output.txt";		// создаем файл с заданным названием и выгружаем туда полученные строки
+	char ifile_name[100];
 	vector<char> words;
 	int counter;
 	while (is_processing) {
 		bool is_open = true;	// без типа стринг очень тяжко в отдельную фунцию это завернуть
+		// проблема в том что ??нельзя?? передать в функцию char переменная[100] так чтобы было как строка
+		cout << "Enter a file name from which take input data: " << endl;
 		while (is_open) {
 			cin.clear();
-			cout << "Enter a file name from which take input data: " << endl;
+			char ifilename[40];
 			cin >> ifile_name;
-
 			ifstream ifile(ifile_name);		// инициализируем файл для выходных файлов
 			if (!ifile.is_open()) {
 				is_open = true;
@@ -123,7 +124,7 @@ int main() {
 				}
 			}
 			while (cin.get() != '\n');
-			cout << "Enter correct file name!";
+			cout << "Enter correct file name! --> ";
 		}
 		ifstream ifile(ifile_name);
 		ofstream ofile(ofile_name, ios_base::app);	// инициализируем файл для выходных данных
