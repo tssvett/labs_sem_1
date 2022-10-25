@@ -133,5 +133,3 @@ int main() {
 		string_output(words, ofile);
 		is_processing = y_n_check();
 	}
-
-}
