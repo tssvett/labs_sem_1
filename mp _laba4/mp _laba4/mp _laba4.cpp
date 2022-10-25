@@ -1,7 +1,7 @@
-﻿// ВАРИАНТ 6
-#include<iostream>
+﻿#include<iostream>
 #include<fstream>		// для работы с файлами
 #include<vector>
+#include<Windows.h>
 using namespace std;
 
 
@@ -24,7 +24,7 @@ void string_output(vector<char>& words, ofstream &file) {		// функция з�
 vector<char> string_input(ifstream &file) {		// функция которая берет входные данные из файла
 	vector<char> words;
 	char symbol;
-	while((symbol = file.get()) != EOF){		//поштучно забираем символы до конца файла и добавляем их в вектор
+	while ((symbol = file.get()) != EOF) {		//поштучно забираем символы до конца файла и добавляем их в вектор
 		words.push_back(symbol);
 	}
 	file.close();
@@ -36,6 +36,7 @@ vector<char> string_input(ifstream &file) {		// функция которая б
 	return words;
 }
 
+ //  В  отчете чтобы так было ЛР4
 
 int spaces_to_star(vector<char>& words) {		// Функция которая заменяет все пробелы на звезды
 	char symbol;
@@ -53,19 +54,19 @@ int spaces_to_star(vector<char>& words) {		// Функция которая за
 }
 
 
-void group_to_one_star(vector<char>& words,int counter_before) {		//функция которая заменяет группу звезд(пробелов) одной звездой(пробелом)
+void group_to_one_star(vector<char>& words, int counter_before) {		//функция которая заменяет группу звезд(пробелов) одной звездой(пробелом)
 	char symbol;
 	char second_symbol;
 	int counter_after = 0;		//задаем второй счетчик для создания рекурсии
-	for (int i = 0; i < words.size()-1; i++) {
+	for (int i = 0; i < words.size() - 1; i++) {
 		symbol = words[i];
 		second_symbol = words[i + 1];
-		if ((symbol == '*')&&(second_symbol == '*')) {		//если символ звезда и след за ним звезда, то убираем одну звезду
+		if ((symbol == '*') && (second_symbol == '*')) {		//если символ звезда и след за ним звезда, то убираем одну звезду
 			words.erase(words.begin() + i);
 			counter_after++;
 		}
 	}
-	if (counter_before > counter_after) {		//Использовал рекурисию до момента пока число звезд не станет равным
+	if (counter_before > counter_after) {		//Если число звезд больше чем число убранных звезд в группах (нам нужно уровнять ч)
 		return group_to_one_star(words, counter_after);
 	}
 }
@@ -95,7 +96,8 @@ bool y_n_check() { // видимо конечная самописная фун�
 
 
 int main() {
-	setlocale(0, "Russian");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	bool is_processing = true;
 	char ofile_name[40] = "string_output.txt";		// создаем файл с заданным названием и выгружаем туда полученные строки
 	char ifile_name[100];
@@ -107,14 +109,18 @@ int main() {
 		cout << "Enter a file name from which take input data: " << endl;
 		while (is_open) {
 			cin.clear();
-			char ifilename[40];
 			cin >> ifile_name;
 			ifstream ifile(ifile_name);		// инициализируем файл для выходных файлов
 			if (!ifile.is_open()) {
 				is_open = true;
+				cout << "Error #1 This file cannot be opened. " << endl;
 			}
 			else {
 				is_open = false;
+				if (ifile.peek() == EOF) {
+					is_open = true;
+					cout << "Error#2  This file is empty. " << endl;
+				}
 			}
 			while (cin.get() != '\n');
 			cout << "Enter correct file name! --> ";
@@ -127,4 +133,5 @@ int main() {
 		string_output(words, ofile);
 		is_processing = y_n_check();
 	}
+
 }
