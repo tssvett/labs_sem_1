@@ -3,7 +3,7 @@
 #include <iomanip>		//библиотека для setw()
 #include<chrono>
 #include<algorithm>
-// вариант 11 
+// вариант 14
 using namespace std;
 using namespace chrono;
 
@@ -55,25 +55,69 @@ void random_array_input(vector<int> &array) {		//функция для запо�
 		array[i] = (rand() % 1000) - 300;
 }
 
+
 void reversed_array_input(vector<int> &array) {		//функция для заполнения вектора случайными числами
+	int temp;
 	for (int i = 0; i < array.size(); i++)
 		array[i] = (rand() % 1000) - 300;
-
-}
-
-
-vector<int> bubble_sorting(vector<int> &array) {  // Сортировка пузырьком		
-	int swap;
-	for (int i = 0; i < array.size() - 1; i++) {		// Используем вложенный цикл
-		for (int j = 0; j < array.size() - i - 1; j++) {		// array.size() - i тк последний член уже самый большой и отсортирован
-			if (array[j + 1] < array[j]) {		// Если второй элемент меньше чем первый элемент
-				swap = array[j + 1];		// Переменная принимает значение второго элемента
-				array[j + 1] = array[j];		// переприсваивание
-				array[j] = swap;		// Переменная принимает значение первого элемента
+	for (int i = 0; i < array.size() - 1; i++)
+	{
+		for (int j = i + 1; j < array.size(); j++)
+		{
+			if (array[i] < array[j])
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
 			}
 		}
 	}
-	return array;
+}
+
+
+void pre_pyramid(vector<int>& vec, int n, int i)
+{
+	int max = i;
+	int l = 2 * i + 1; // левый 
+	int r = 2 * i + 2; // правый
+
+	// Если левый дочерний элемент больше корня
+	if (l < n && vec[l] > vec[max])
+		max = l;
+
+	// Если правый дочерний элемент больше, чем самый большой элемент на данный момент
+	if (r < n && vec[r] > vec[max])
+		max = r;
+
+	// Если самый большой элемент не корень
+	if (max != i)
+	{
+		int temp = vec[i];
+		vec[i] = vec[max];
+		vec[max] = temp;
+
+		pre_pyramid(vec, n, max);
+	}
+}
+
+// Основная функция, выполняющая пирамидальную сортировку
+vector<int> pyramid_sorting(vector<int>& vec, int n)
+{
+	// Построение кучи
+	for (int i = n / 2 - 1; i >= 0; i--)
+		pre_pyramid(vec, n, i);
+
+	for (int i = n - 1; i >= 0; i--)
+	{
+		// Перемещаем текущий корень в конец
+		int temp = vec[0];
+		vec[0] = vec[i];
+		vec[i] = temp;
+
+		//heap на уменьшенной куче
+		pre_pyramid(vec, i, 0);
+	}
+	return vec;
 }
 
 
@@ -144,16 +188,16 @@ void algorithm(vector<int> &empty_array) {
 		array_output(empty_array, critical_lenght);
 	}
 	steady_clock::time_point begin1 = steady_clock::now();
-	vector<int>bubble = bubble_sorting(empty_array);
+	vector<int>pyramid = pyramid_sorting(empty_array,lenght);
 	steady_clock::time_point end1 = steady_clock::now();
 	double time1 = duration_cast<microseconds>(end1 - begin1).count();
 	if (lenght < critical_lenght) {
-		cout << "The array sorted by buble:  ";
-		array_output(bubble, lenght);		// Выводим отсортированный вектор
+		cout << "The array sorted by pyramid:  ";
+		array_output(pyramid, lenght);		// Выводим отсортированный вектор
 	}
 	else {
-		cout << "The array sorted by buble:  ";
-		array_output(bubble, critical_lenght);
+		cout << "The array sorted by pyramid:  ";
+		array_output(pyramid, critical_lenght);
 	}
 	steady_clock::time_point begin2 = steady_clock::now();
 	sort(empty_array.begin(), empty_array.end());
@@ -162,14 +206,14 @@ void algorithm(vector<int> &empty_array) {
 	if (lenght < critical_lenght) {
 		cout << "The array sorted by sort:  ";
 		array_output(empty_array, lenght);		// Выводим отсортированный вектор
-		cout << "Time for bubble sort is: " << time1 << "ms" << endl;
+		cout << "Time for pyramidal sort is: " << time1 << "ms" << endl;
 		cout << "Time for sort() is: " << time2 << "ms" << endl;
 		cout << "The acceleration is: " << time1 / time2 << endl;
 	}
 	else {
 		cout << "The array sorted by sort:  ";
 		array_output(empty_array, critical_lenght);
-		cout << "Time for bubble sort is: " << time1 << "ms" << endl;
+		cout << "Time for pyramidal sort is: " << time1 << "ms" << endl;
 		cout << "Time for sort() is: " << time2 << "ms" << endl;
 		cout << "The acceleration is: " << time1 / time2 << endl;
 	}
@@ -195,7 +239,7 @@ int main() {
 			algorithm(empty_array);
 			break;
 		case 3:
-			random_array_input(empty_array);		// Заполняем вектор значениями введенный случайными значениями
+			reversed_array_input(empty_array);		// Заполняем вектор значениями введенный случайными значениями
 			algorithm(empty_array);
 			break;
 		}
