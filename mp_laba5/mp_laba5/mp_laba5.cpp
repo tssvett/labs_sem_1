@@ -14,9 +14,22 @@ public:
 		starting_floor = inf_starting_floor;
 		ending_floor = inf_ending_floor;
 	}
-	void getInformation() {
+	void outputInformation() {
 		cout << "Time: " << time << " Starting floor: " << starting_floor << " Ending floor: " << ending_floor << endl;
 	}
+
+	string getTime(){
+		return time;
+	}
+
+	int getStarting_floor() {
+		return starting_floor;
+	}
+
+	int getEnding_floor() {
+		return ending_floor;
+	}
+
 	void floors_passed(int starting_floor, int ending_floor) {
 		int passed;
 		passed = abs(starting_floor - ending_floor);
@@ -24,7 +37,11 @@ public:
 		cout << "\n";
 
 	}
+
+
 };
+
+
 
 
 string time_check() {
@@ -99,7 +116,6 @@ int correct_input_int() {		// эта функция проверяет длин�
 	}
 	return floor;	// возвращаем длину
 }
-
 
 
 int main() {
