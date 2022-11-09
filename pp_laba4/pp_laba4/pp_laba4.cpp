@@ -4,6 +4,7 @@
 #include<Windows.h>
 #include<string>
 #include<chrono>
+// Вариант 6
 using namespace std;
 using namespace chrono;
 
@@ -201,8 +202,8 @@ void get_all_times(vector<double> times1, vector<double> times2) {
 	}
 	double average_time1 = sum1 / 10;
 	double average_time2 = sum2 / 10;
-	cout << "Average time in pp is: " << average_time1 << endl;
-	cout << "Average time in mp is: " << average_time2 << endl;
+	cout << "Average time in pp(in ms) is: " << average_time1 << endl;
+	cout << "Average time in mp(in ms) is: " << average_time2 << endl;
 }
 
 int main() {
@@ -224,7 +225,7 @@ int main() {
 		ifile_name = file_name_input();
 		ifstream introduced(ifile_name);
 		introduce(introduced);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++) {		// Десять итераций
 			ifstream ifile_pp(ifile_name);
 			ifstream ifile_mp(ifile_name);
 			
@@ -247,8 +248,8 @@ int main() {
 			times2.push_back(ms_time2);
 		}
 		string_output_pp(words_pp, ofile_pp);		//Вывод информации вне цикла
-		string_output_mp(words_mp, ofile_pp);
-		get_all_times(times1, times2);
+		string_output_mp(words_mp, ofile_mp);
+		get_all_times(times1, times2);		// делим на десять и выводим средние для двух алгоритмов
 		is_processing = y_n_check();
 	}
 }
