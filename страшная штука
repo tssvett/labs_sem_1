@@ -1,0 +1,73 @@
+ifstream& operator>> (ifstream &ifile, Elevator& lift) {		// Перегрузка оператора ввода из файла
+	string starting;
+	vector<Elevator> all;
+	while (getline(ifile, starting)) {	//пока ввод длина не введена или символ справа не конец строки или длина отрицательна
+		Elevator lift;
+		string times;
+		string string_hour;
+		string string_minute;
+		int hour;
+		int minute;
+		string string_number1 = "";
+		string string_number2 = "";
+		cout << starting << endl;
+		if (starting.size() >= 5) {
+			for (int i = 0; i < 5; i++) {
+				times.push_back(starting[i]);
+			}
+		}
+		else {
+			cout << "Error" << endl;
+		}
+		cout << times << endl;
+		if (times.size() == 5) {
+			if (isdigit(times[0]) && isdigit(times[1]) && times[2] == ':' && isdigit(times[3]) && isdigit(times[4])) {
+				string_hour.push_back(times[0]);
+				string_hour.push_back(times[1]);
+				string_minute.push_back(times[3]);
+				string_minute.push_back(times[4]);
+				hour = stoi(string_hour);
+				minute = stoi(string_minute);
+				if ((hour >= 0 && hour < 24) && (minute >= 0 && minute < 60)) {
+					lift.time = times;
+					cout << "Timee " << lift.time << endl;
+				}
+				else {
+					string_hour.pop_back();
+					string_hour.pop_back();
+					string_minute.pop_back();
+					string_minute.pop_back();
+					//cout << "Error " << endl;
+				}
+
+			}
+		}
+
+		starting.erase(0, 6);		//Убираем время
+		//ИМЕЕМ 1 9
+		cout << starting << endl;
+		for (int i = 0; i < starting.size(); i++) {
+			string_number1 += starting[i];
+			if (starting[i] == ' ') {
+				i = starting.size();
+			}
+		}
+		lift.starting_floor = stoi(string_number1);
+		starting.erase(0, string_number1.size());
+	
+		for (int i = 0; i < starting.size(); i++) {
+			string_number2 += starting[i];
+			if (starting[i] == ' ') {
+				i = starting.size();
+			}
+		}
+		lift.ending_floor = stoi(string_number2);
+		starting.erase(0, 100);
+		cout << starting << endl;
+		all.push_back(lift);
+	}
+	for (int i = 0; i < all.size(); i++) {
+		cout << all[i];
+	}
+	return ifile;
+}
