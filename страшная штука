@@ -1,7 +1,153 @@
-ifstream& operator>> (ifstream &ifile, Elevator& lift) {		// Перегрузка оператора ввода из файла
+#include<iostream>
+#include<fstream>
+#include<string>
+#include <vector>
+#include<iomanip>
+using namespace std;
+
+class Elevator {
+private:
+	string time;
+	int starting_floor;
+	int ending_floor;
+
+public:
+	Elevator() {		//Конструктор по умолчанию
+		time = "0";
+		starting_floor = 0;
+		ending_floor = 0;
+	}
+	Elevator(string t, int sf, int ef ) {                       //Инициализирующий конструктор
+		time = t;
+		starting_floor = sf;
+		ending_floor = ef;
+	}
+	Elevator(const Elevator& val) : time(val.time), starting_floor(val.starting_floor), ending_floor(val.ending_floor) {}  //Конструктор копирования
+	~Elevator() {} //Деструктор
+
+	void setInformation(string inf_time, int inf_starting_floor, int inf_ending_floor) {
+		time = inf_time;
+		starting_floor = inf_starting_floor;
+		ending_floor = inf_ending_floor;
+	}
+	void setTime(string t) {
+		time = t;
+	}
+
+
+	string getTime(){
+		return time;
+	}
+
+	int getStarting_floor() {
+		return starting_floor;
+	}
+
+	int getEnding_floor() {
+		return ending_floor;
+	}
+
+	int passed_calc() {		//функция-член класса, реализующая обработку данных экземпляра класса согласно варианту;
+		int passed = abs(starting_floor - ending_floor);
+		return passed;
+	}
+	void clear() {
+		time = "0";
+		starting_floor = 0;
+		ending_floor = 0;
+	}
+	friend istream& operator>>(istream &, Elevator&);
+	friend ostream& operator<<(ostream &, Elevator);
+	friend ifstream& operator>>(ifstream &, vector<Elevator>&);
+	friend ofstream& operator<< (ofstream &, Elevator&);
+
+
+};
+
+
+
+int correct_check() {		// эта функция проверяет длину на корректный ввод
+	int floor;
+	while (!(cin >> floor) || (cin.peek() != '\n') || (floor <= 0)) {	//пока ввод длина не введена или символ справа не конец строки или длина отрицательна
+		cin.clear(); // очищаем поток от флага ошибки
+		while (cin.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
+		cout << "Error! Input a CORRECT number: "; // выводим ошибку
+	}
+	return floor;	// возвращаем длину
+}
+
+
+ostream& operator<<(ostream &out, Elevator lift)		// Перегрузка оператора вывода в консоль
+{
+	out << lift.time << ' ' << lift.starting_floor << ' ' << lift.ending_floor << ' ' << endl;
+	return out;
+}
+
+
+ofstream& operator <<(ofstream &out, Elevator& lift) {
+	out << setw(5) << lift.time << ' ' << setw(10) << lift.starting_floor << ' ' << setw(10) << lift.ending_floor << ' ' << setw(10) << lift.passed_calc() << endl;
+	return out;
+}
+
+
+istream& operator>>(istream &in, Elevator& lift) {  //Перегрузка оператора ввода и все проверки на ввод
+	bool flag = true;
+	string string_hour;
+	string string_minute;
+	int hour;
+	int minute;
+	while (flag) {
+		in >> lift.time;
+		in.clear();
+		if (lift.time.size() == 5) {
+			if (isdigit(lift.time[0]) && isdigit(lift.time[1]) && lift.time[2] == ':' && isdigit(lift.time[3]) && isdigit(lift.time[4])) {
+				string_hour.push_back(lift.time[0]);
+				string_hour.push_back(lift.time[1]);
+				string_minute.push_back(lift.time[3]);
+				string_minute.push_back(lift.time[4]);
+				hour = stoi(string_hour);
+				minute = stoi(string_minute);
+				if ((hour >= 0 && hour < 24) && (minute >= 0 && minute < 60)) {
+					flag = false;
+				}
+				else {
+					string_hour.pop_back();
+					string_hour.pop_back();
+					string_minute.pop_back();
+					string_minute.pop_back();
+					flag = true;
+					cout << "Error! Enter CORRECT time: ";
+				}
+			}
+			else {
+				flag = true;
+				cout << "Error! Enter CORRECT time: ";
+			}
+		}
+		else {
+			flag = true;
+			cout << "Error! Enter CORRECT time: ";
+		}
+	}
+	while (!(in >> lift.starting_floor) || (cin.peek() != '\n') || (lift.starting_floor <= 0)) {	//пока ввод длина не введена или символ справа не конец строки или длина отрицательна
+		in.clear(); // очищаем поток от флага ошибки
+		while (in.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
+		cout << "Error! Input a CORRECT number: "; // выводим ошибку
+	}
+	while (!(in >> lift.ending_floor) || (cin.peek() != '\n') || (lift.ending_floor <= 0)) {	//пока ввод длина не введена или символ справа не конец строки или длина отрицательна
+		in.clear(); // очищаем поток от флага ошибки
+		while (in.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
+		cout << "Error! Input a CORRECT number: "; // выводим ошибку
+	}
+	return in;
+} 
+
+
+ifstream& operator>> (ifstream &ifile, vector<Elevator>& lifts) {		// Перегрузка оператора ввода из файла
 	string starting;
-	vector<Elevator> all;
-	while (getline(ifile, starting)) {	//пока ввод длина не введена или символ справа не конец строки или длина отрицательна
+	bool flag = true;
+	while (flag && (getline(ifile, starting))) {
+		cout << starting << " GET" << endl;
 		Elevator lift;
 		string times;
 		string string_hour;
@@ -10,18 +156,17 @@ ifstream& operator>> (ifstream &ifile, Elevator& lift) {		// Перегрузк�
 		int minute;
 		string string_number1 = "";
 		string string_number2 = "";
-		cout << starting << endl;
 		if (starting.size() >= 5) {
 			for (int i = 0; i < 5; i++) {
 				times.push_back(starting[i]);
 			}
 		}
 		else {
+			flag = false;
 			cout << "Error" << endl;
 		}
 		cout << times << endl;
-		if (times.size() == 5) {
-			if (isdigit(times[0]) && isdigit(times[1]) && times[2] == ':' && isdigit(times[3]) && isdigit(times[4])) {
+			if (flag && isdigit(times[0]) && isdigit(times[1]) && times[2] == ':' && isdigit(times[3]) && isdigit(times[4])) {
 				string_hour.push_back(times[0]);
 				string_hour.push_back(times[1]);
 				string_minute.push_back(times[3]);
@@ -37,37 +182,226 @@ ifstream& operator>> (ifstream &ifile, Elevator& lift) {		// Перегрузк�
 					string_hour.pop_back();
 					string_minute.pop_back();
 					string_minute.pop_back();
-					//cout << "Error " << endl;
+					flag = false;
+					cout << "Error " << endl;
 				}
 
 			}
+			else {
+				flag = false;
+				cout << "Error " << endl;
+
+			}
+		starting.erase(0, 6);		//Убираем время
+		while (flag && starting[0] == ' ')
+			starting.erase(0);
+		cout << starting << endl;
+		if (flag && starting.size() >= 1) {
+			for (int i = 0; i < starting.size(); i++) {
+				string_number1 += starting[i];
+				if (starting[i] == ' ') {
+					i = starting.size();
+				}
+			}
+			lift.starting_floor = stoi(string_number1);
+			starting.erase(0, string_number1.size());
+		}
+		else
+		{
+			cout << "Error";
+			flag = false;
 		}
 
-		starting.erase(0, 6);		//Убираем время
-		//ИМЕЕМ 1 9
-		cout << starting << endl;
-		for (int i = 0; i < starting.size(); i++) {
-			string_number1 += starting[i];
-			if (starting[i] == ' ') {
-				i = starting.size();
+		if (flag && starting.size() >= 1) {
+			for (int i = 0; i < starting.size(); i++) {
+				string_number2 += starting[i];
+				if (starting[i] == ' ') {
+					i = starting.size();
+				}
 			}
+			lift.ending_floor = stoi(string_number2);
+			starting.erase(0, 100);
+			cout << lift << endl;
 		}
-		lift.starting_floor = stoi(string_number1);
-		starting.erase(0, string_number1.size());
-	
-		for (int i = 0; i < starting.size(); i++) {
-			string_number2 += starting[i];
-			if (starting[i] == ' ') {
-				i = starting.size();
-			}
+		else
+		{
+			cout << "Error";
+			flag = false;
 		}
-		lift.ending_floor = stoi(string_number2);
-		starting.erase(0, 100);
-		cout << starting << endl;
-		all.push_back(lift);
-	}
-	for (int i = 0; i < all.size(); i++) {
-		cout << all[i];
+		lifts.push_back(lift);
 	}
 	return ifile;
 }
+
+
+
+
+bool y_n_check() { // видимо конечная самописная функция проверки y/n
+		bool flag = true;		// зацикливаем ее при случае неверного ввода y/n
+		char symbol;
+		cout << endl << "Do you want to continue? --> Y/N\n";
+		while (!(cin >> symbol) || flag) {
+			cin.clear();
+			if ((symbol == 'N' || symbol == 'n') && (cin.peek() == '\n')) {		// если нет, то
+				flag = false;		// зацикленность проверки y/n отключается
+				return false;		// функция возвращает false и вся программа прекращает свое выполнение
+			}
+			else if ((symbol == 'Y' || symbol == 'y') && (cin.peek() == '\n')) {		// если да, то
+				flag = false;		// зацикленность проверки отключается
+				return true;		// функция возвращает true и программа продолжает свое выполнение
+			}
+			else {		// при иных значениях ввода проверка y/n зацикливается
+				flag = true;
+			}
+			while (cin.get() != '\n');
+			cout << "Do you want to continue? Please, enter --> Y/N\n";	// извлекаем ошибочные символы, считывая до конца строчки
+		}
+	}
+
+
+string file_name_input() {
+	bool is_open = true;
+	string ifile_name;
+	cout << "Enter a file name from which take input data: " << endl;
+	while (is_open) {
+		cin.clear();
+		cin >> ifile_name ;
+		ifstream ifile(ifile_name);		// инициализируем файл для выходных файлов
+		if (!ifile.is_open()) {
+			is_open = true;
+			cout << "Error #1 This file cannot be opened. Enter correct filename. " << endl;
+		}
+		else {
+			is_open = false;
+			if (ifile.peek() == EOF) {
+				is_open = true;
+				cout << "Error#2  This file is empty. Enter correct filename " << endl;
+			}
+		}
+		while (cin.get() != '\n');
+	}
+	return ifile_name;
+}
+
+
+void input_menu_output() {
+	cout << "Console application designed to work with information about the evelator movement" << endl;
+	cout << "Choose the object input method:" << endl;
+	cout << "1 -- input objects by keyboard" << endl;
+	cout << "2 -- input objects from file" << endl;
+	cout << "Your choise ----> ";
+}
+
+
+void output_menu_output() {
+	cout << "Choose the object output method:" << endl;
+	cout << "1 -- output objects in console" << endl;
+	cout << "2 -- output objects in file" << endl;
+	cout << "Your choise ----> ";
+}
+
+
+int switch_symbol_input() {
+	char symbol;
+	bool flag = true;
+	while (flag) {
+		cin >> symbol;
+		if ((symbol == '1') && (cin.peek() == '\n')) {		// если нет, то
+			flag = false;		// зацикленность проверки y/n отключается
+			return 1;		// функция возвращает false и вся программа прекращает свое выполнение
+		}
+		if ((symbol == '2') && (cin.peek() == '\n')) {		// если нет, то
+			flag = false;		// зацикленность проверки y/n отключается
+			return 2;		// функция возвращает false и вся программа прекращает свое выполнение
+		}
+		while (cin.get() != '\n');
+		cout << "Error! Input  1 or 2" << endl;	// извлекаем ошибочные символы, считывая до конца строчки
+		cout << "--> ";
+	}
+}
+
+
+
+int main() {
+	bool is_processing = true;
+	int lenght;
+	int input_symbol;
+	int output_symbol;
+	string ofile_name = "output.txt";
+	string ifile_name;
+	ofstream ofile(ofile_name);
+	string words;
+	while (is_processing) {
+		vector<Elevator> objects_array;
+		vector<int> passed_array;
+		input_menu_output();
+		input_symbol = switch_symbol_input();
+		switch (input_symbol) {
+		case 1:		//Тут работаем с консолью
+			cout << "Input array lenght: ";
+			lenght = correct_check();
+			for (int i = 0; i < lenght; i++) {
+				Elevator lift;
+				cout << "Initialization the " << i + 1 << " class object" << endl;
+				cout << "Input correct time in format (hh:mm), starting floor, ending floor" << endl;
+				cin >> lift;
+				objects_array.push_back(lift);
+				passed_array.push_back(lift.passed_calc());
+			}
+			output_menu_output();
+			output_symbol = switch_symbol_input();
+			switch (output_symbol) {
+			case 1:
+				for (int i = 0; i < objects_array.size(); i++) {
+					cout << "Object number " << i + 1 << ": " << objects_array[i];
+					cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
+				}
+				break;
+			case 2:
+				for (int i = 0; i < objects_array.size(); i++) {
+					ofile << objects_array[i] << endl;
+				}
+				break;
+			}
+			break;
+			case 2:
+			ifile_name = file_name_input();
+			ifstream ifile(ifile_name);
+			vector<Elevator> lift;
+			ifile >> lift;
+			for (int i = 0; i < lift.size(); i++) {
+				cout << lift[i] << endl;
+
+				if ((lift[i].getTime() == "0") || (lift[i].getEnding_floor() == 0) || (lift[i].getStarting_floor() == 0)) {
+					cout << "Error with objects information has been detected! Please, check your file for correctness.";
+					is_processing = y_n_check();
+				}
+				objects_array.push_back(lift[i]);
+				passed_array.push_back(lift[i].passed_calc());
+			}
+
+			
+			//}
+			output_menu_output();
+			output_symbol = switch_symbol_input();
+			switch (output_symbol) {
+			case 1:
+				for (int i = 0; i < objects_array.size(); i++) {
+					cout << "Object number " << i + 1 << ": " << objects_array[i];
+					cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
+				}
+				break;
+			case 2:
+				for (int i = 0; i < objects_array.size(); i++) {
+					ofile << objects_array[i] << endl;
+				}
+				ofile << "\n" << endl;
+				cout << "Output in file completed successfully." << endl;
+				break;
+			}
+			break;
+		}
+		is_processing = y_n_check();
+	}
+}
+
