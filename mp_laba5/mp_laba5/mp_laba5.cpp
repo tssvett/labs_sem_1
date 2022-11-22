@@ -1,7 +1,7 @@
 ﻿#include<iostream>
 #include<fstream>
 #include<string>
-#include <vector>
+#include<vector>
 #include<iomanip>
 using namespace std;
 
@@ -17,23 +17,29 @@ public:
 		starting_floor = 0;
 		ending_floor = 0;
 	}
+
 	Elevator(string t, int sf, int ef ) {	// Инициализирующий конструктор
 		time = t;
 		starting_floor = sf;
 		ending_floor = ef;
 	}
+
 	Elevator(const Elevator& val) : time(val.time), starting_floor(val.starting_floor), ending_floor(val.ending_floor) {}  //Конструктор копирования
+	
 	~Elevator() {}	//Деструктор
 
 	void setTime(string t) {	//Сеттер времени
 		time = t;
 	}
+
 	void setStarting_floor(int sf) {	//Сеттер стартового этажа
 		starting_floor = sf;
 	}
+
 	void setEnding_floor(int se) {	//Сеттер конечного этажа
 		ending_floor = se;
 	}
+
 	string getTime(){	//Геттер времени
 		return time;
 	}
@@ -50,6 +56,7 @@ public:
 		int passed = abs(starting_floor - ending_floor);
 		return passed;
 	}
+
 	friend istream& operator>>(istream &, Elevator&);	//Дружественная функция позволяет менять приватные переменные
 	friend ostream& operator<<(ostream &, Elevator);	//Здесь находятся все 4 перегрузки
 	friend ifstream& operator>>(ifstream &, vector<Elevator>&);		//Перегрузки операторов ввода вывода консоли
@@ -57,18 +64,6 @@ public:
 
 
 };
-
-
-
-int correct_check() {		// Функция проверки длины массива
-	int lenght;
-	while (!(cin >> lenght) || (cin.peek() != '\n') || (lenght <= 0)) {	//Работа с потоком
-		cin.clear(); // очищаем поток от флага ошибки
-		while (cin.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
-		cout << "Error! Input a CORRECT number: "; // выводим ошибку
-	}
-	return lenght;	// возвращаем длину
-}
 
 
 ostream& operator<<(ostream &out, Elevator lift)		// Перегрузка оператора вывода в консоль ОДНА ИЗ ОСОБЕННОСТЕЙ
@@ -219,6 +214,15 @@ ifstream& operator>> (ifstream &ifile, vector<Elevator>& lifts) {		// Перег
 }
 
 
+int correct_check() {		// Функция проверки длины массива
+	int lenght;
+	while (!(cin >> lenght) || (cin.peek() != '\n') || (lenght <= 0)) {	//Работа с потоком
+		cin.clear(); // очищаем поток от флага ошибки
+		while (cin.get() != '\n'); // извлекаем ошибочные символы, считывая до конца строчки
+		cout << "Error! Input a CORRECT number: "; // выводим ошибку
+	}
+	return lenght;	// возвращаем длину
+}
 
 
 bool y_n_check() { // Функция возвращает 1 0 в зависимости от y n
@@ -278,8 +282,6 @@ void input_menu_output() {	//Просто вывод
 }
 
 
-
-
 void output_menu_output() {	//Просто вывод
 	cout << "Choose the object output method:" << endl;
 	cout << "1 -- output objects in console" << endl;
@@ -308,6 +310,37 @@ int switch_symbol_input() {	//Функция проверки символа д�
 }
 
 
+void switch_cycle_console(vector<Elevator> objects_array, vector<int> passed_array ) {
+	for (int i = 0; i < objects_array.size(); i++) {
+		cout << "Object number " << i + 1 << ": " << objects_array[i];
+		cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
+	}
+}
+
+
+void switch_cycle_file(vector<Elevator> objects_array, vector<int> passed_array, ofstream& ofile) {
+	for (int i = 0; i < objects_array.size(); i++) {
+		ofile << objects_array[i] << endl;
+	}
+	ofile << "\n" << endl;
+}
+
+
+void out_switch(vector<Elevator> objects_array, vector<int> passed_array, ofstream& ofile) {
+	output_menu_output();
+	int output_symbol = switch_symbol_input();	//Вводим символ для выводного свича
+	switch (output_symbol) {
+	case 1:
+		switch_cycle_console(objects_array, passed_array);
+		break;
+	case 2:
+		switch_cycle_file(objects_array, passed_array, ofile);
+		break;
+	}
+	cout << "Output completed successfully." << endl;
+}
+
+
 int main() {
 	bool is_processing = true;
 	int lenght;
@@ -329,26 +362,12 @@ int main() {
 			for (int i = 0; i < lenght; i++) {
 				Elevator lift;
 				cout << "Initialization the " << i + 1 << " class object" << endl;
-				cout << "Input correct time in format (hh:mm), starting floor, ending floor" << endl;
+				cout << "Input correct time in format (hh:mm), starting floor, ending floor. Each field input in separated string." << endl;
 				cin >> lift;
 				objects_array.push_back(lift);
 				passed_array.push_back(lift.passed_calc());
 			}
-			output_menu_output();
-			output_symbol = switch_symbol_input();
-			switch (output_symbol) {
-			case 1:	//Если 1 выводим в консоль
-				for (int i = 0; i < objects_array.size(); i++) {
-					cout << "Object number " << i + 1 << ": " << objects_array[i];
-					cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
-				}
-				break;
-			case 2:	// Если 2 выводим в файл
-				for (int i = 0; i < objects_array.size(); i++) {
-					ofile << objects_array[i] << endl;
-				}
-				break;
-			}
+			out_switch(objects_array, passed_array, ofile);
 			break;
 		case 2:	// Если 2 вводим из файла
 			ifile_name = file_name_input();
@@ -367,40 +386,9 @@ int main() {
 
 				}
 			}
-			output_menu_output();
-			output_symbol = switch_symbol_input();	//Вводим символ для выводного свича
-			switch (output_symbol) {
-			case 1:
-				for (int i = 0; i < objects_array.size(); i++) {
-					cout << "Object number " << i + 1 << ": " << objects_array[i];
-					cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
-				}
-				break;
-			case 2:
-				for (int i = 0; i < objects_array.size(); i++) {
-					ofile << objects_array[i] << endl;
-				}
-				ofile << "\n" << endl;
-				cout << "Output in file completed successfully." << endl;
-				break;
-			}
+			out_switch(objects_array, passed_array, ofile);
 			break;
-			output_symbol = switch_symbol_input();
-			switch (output_symbol) {
-			case 1:	//Если 1 выводим в консоль
-				for (int i = 0; i < objects_array.size(); i++) {
-					cout << "Object number " << i + 1 << ": " << objects_array[i];
-					cout << "Object number " << i + 1 << " passed floors: " << passed_array[i] << endl;
-				}
-				break;
-			case 2:	// Если 2 выводим в файл
-				for (int i = 0; i < objects_array.size(); i++) {
-					ofile << objects_array[i] << endl;
-				}
-				break;
-			}
 		}
 		is_processing = y_n_check();
 	}
 }
-
