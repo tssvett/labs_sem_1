@@ -1,0 +1,62 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#include <chrono>
+
+using namespace std;
+
+long long p(string s, int x, int m)
+{
+	long long func_value = 0, i, x_v_stepeni = 1, l = s.size();		//для первой итерации x^0 = 1
+	for (i = 0; i < l; i++)
+	{	
+		//func_value = (func_value + (s[i] - '0')*x_v_stepeni) % m;
+		//func_value = ( (func_value % m) + ((s[i] - '0')*x_v_stepeni % m)    ) % m;
+		//func_value = ( (func_value % m) + ((s[i] - '0')*x_v_stepeni % m)    ) % m;
+		func_value = ((func_value % m) + (((s[i] - '0')%m)*(x_v_stepeni%m) % m)) % m;
+		x_v_stepeni = (x_v_stepeni % m) * (x % m) % m;
+	}
+	// (a*b) % c = ((a % c) * (b % c)) % c
+	return func_value;
+}
+
+//Расчитываем все возможные хеши
+vector<long long> get_i(vector<string> string_array, int x, int m) {
+	vector<long long> pls;
+	for (int i = 0; i < string_array.size(); ++i) {
+		long long func_value = p(string_array[i], x, m);
+		pls.push_back(func_value);
+	}
+	return pls;
+}
+
+
+
+int main() {
+	//Задаю переменные
+	int counter = 0;
+	int n, m, x;
+	string s;
+	vector<string> string_array;
+	cin >> n;
+	cin >> m;
+	cin >> x;
+	for (int i = 0; i < n; i++) {
+		cin >> s;
+		string_array.push_back(s);
+	}
+	
+	//Вектор со всеми значениями
+	vector<long long> all_i = get_i(string_array, x, m);
+	
+	// Сравниваю эти значения если они одинаковые счетчик +1
+	for (int i = 0; i < string_array.size(); ++i) {
+		for (int j = i+1; j < string_array.size(); ++j) {
+			if ((all_i[i] == all_i[j])) {
+				counter += 1;
+			}
+		} 
+	}
+	cout << counter;
+
+}
